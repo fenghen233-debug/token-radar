@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Token Radar: Pre-Token Protocol Launch Valuation</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body class="dark-theme">
+  <div class="layout">
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">TOKEN RADAR</h1>
+          <p class="brand-subtitle">Pre-token protocols ranked by implied market valuation</p>
+        </div>
+      </div>
+      <div class="meta-tag" id="asOfTag">Snapshot: 2026-11-14</div>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Protocols Ranked</span>
+        <div class="stat-value" id="statRanked">-</div>
+        <span class="stat-desc">Records no token in index</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Watchlist Protocols</span>
+        <div class="stat-value text-accent" id="statWatchlist">-</div>
+        <span class="stat-desc">100% floor coverage verified</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Median Implied Value</span>
+        <div class="stat-value text-cyan" id="statMedianVal">-</div>
+        <span class="stat-desc">Per-category median benchmark</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Implied Market</span>
+        <div class="stat-value text-emerald" id="statTotalVal">-</div>
+        <span class="stat-desc">Sum of model valuations</span>
+      </div>
+    </section>
+
+    <section class="controls-bar">
+      <div class="search-box">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search protocol, category or chain..." autocomplete="off">
+      </div>
+      <div class="filter-group">
+        <select id="categorySelect" aria-label="Category filter">
+          <option value="all">All Categories</option>
+        </select>
+        <label class="toggle-pill" id="watchlistToggleLabel">
+          <input type="checkbox" id="watchlistToggle">
+          <span class="pill-slider"></span>
+          <span class="pill-text">Watchlist Only</span>
+        </label>
+        <button id="resetBtn" class="btn-secondary" title="Reset all filters">Reset</button>
+      </div>
+    </section>
+
+    <div class="table-meta">
+      <span id="resultCount">Showing 0 protocols</span>
+      <span class="hint">Click any row to inspect valuation breakdown and farm steps</span>
+    </div>
+
+    <main class="table-container">
+      <table class="data-table" id="dataTable">
+        <thead>
+          <tr>
+            <th class="col-rank sortable" data-key="rank"># <span class="sort-indicator"></span></th>
+            <th class="col-name sortable" data-key="name">Protocol <span class="sort-indicator"></span></th>
+            <th class="col-cat sortable" data-key="category">Category <span class="sort-indicator"></span></th>
+            <th class="col-chains">Chains</th>
+            <th class="col-tvl sortable" data-key="tvl_usd">TVL <span class="sort-indicator"></span></th>
+            <th class="col-7d sortable" data-key="change_7d">7d Change <span class="sort-indicator"></span></th>
+            <th class="col-implied sortable" data-key="implied_value_usd">Implied Value <span class="sort-indicator"></span></th>
+            <th class="col-action">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </main>
+
+    <footer class="page-footer">
+      <div>Token Radar &bull; Model: <code>category-median &times; momentum &times; maturity &times; breadth</code></div>
+      <div>Strictly covers protocols where data records no token</div>
+    </footer>
+  </div>
+
+  <!-- Detail Modal / Drawer -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div>
+          <div class="modal-badges" id="modalBadges"></div>
+          <h2 class="modal-title" id="modalTitle">Protocol Name</h2>
+          <p class="modal-subtitle" id="modalSubtitle">slug-identifier</p>
+        </div>
+        <button class="modal-close" id="modalClose" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <section class="modal-section">
+          <h3 class="section-title">Valuation Model Breakdown</h3>
+          <div class="modal-metrics-grid" id="modalMetrics"></div>
+        </section>
+
+        <section class="modal-section">
+          <div class="section-header-row">
+            <h3 class="section-title">Farm Execution Plan</h3>
+            <span class="step-count-badge" id="stepCountBadge">6 Steps</span>
+          </div>
+          <div class="farm-steps-list" id="modalFarmSteps"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="../data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
