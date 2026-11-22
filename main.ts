@@ -57,28 +57,30 @@ function copyFiles(from: string, to: string): string[] {
 
 copyFiles(join(here, 'dashboard'), join(out, 'dashboard'));
 const shots = copyFiles(join(here, 'screenshots'), join(out, 'screenshots'));
-
-if (shots.length >= 3) {
-  for (const name of shots) {
-    if (!IMAGE_NAME.test(name)) {
-      process.stderr.write(`token radar: screenshots/${name}: invalid filename\n`);
-      process.exit(1);
-    }
-  }
-  writeFileSync(
-    join(out, 'dossier.json'),
-    buildDossier(out, {
-      text_max_bytes: TEXT_MAX_BYTES,
-      screenshots: SCREENSHOT_CAPS,
-      dashboard: { max_files: 400, max_bytes: 4_194_304 },
-    })
+if (shots.length < 3) {
+  process.stderr.write(
+    `token radar: screenshots/ holds ${shots.length} image${shots.length === 1 ? '' : 's'}: at least 3 required (the board, a detail view and a filtered view)\n`
   );
-} else if (existsSync(join(here, 'screenshots'))) {
-  // If screenshots exist but fewer than 3, notify
-  process.stderr.write(`token radar note: screenshots/ holds ${shots.length} image(s); minimum 3 required for full dossier\n`);
+  process.exit(1);
 }
+
+for (const name of shots) {
+  if (!IMAGE_NAME.test(name)) {
+    process.stderr.write(`token radar: screenshots/${name}: a name is letters, digits and . _ -, 1 to 128 characters\n`);
+    process.exit(1);
+  }
+}
+
+writeFileSync(
+  join(out, 'dossier.json'),
+  buildDossier(out, {
+    text_max_bytes: TEXT_MAX_BYTES,
+    screenshots: SCREENSHOT_CAPS,
+    dashboard: { max_files: 400, max_bytes: 4_194_304 },
+  })
+);
 
 process.stdout.write(
   `token radar: ${snapshot.protocols.length} total protocols, ${snapshot.watchlist.length} on watchlist, ${board.length} pre-token protocols ranked\n` +
-    `token radar: wrote ${join(out, 'board.json')}, ${join(out, 'data.js')}, ${join(out, 'dashboard')} and ${join(out, 'dossier.json')}\n`
+    `token radar: wrote ${join(out, 'board.json')}, ${join(out, 'data.js')}, ${join(out, 'dashboard')}, ${join(out, 'screenshots')} (${shots.length} images) and ${join(out, 'dossier.json')}\n`
 );
